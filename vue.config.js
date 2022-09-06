@@ -3,6 +3,7 @@ const { resolve } = require('path')
 const cpns = resolve(__dirname, 'src/components')
 const views = resolve(__dirname, 'src/views')
 module.exports = defineConfig({
+  lintOnSave: false,
   transpileDependencies: true,
   configureWebpack: {
     devServer: {
