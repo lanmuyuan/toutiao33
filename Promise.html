@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // 1.executor 执行器函数
+        // 2.resolve:把promise变成成功态，reject:把promise变成失败态
+        // 3.value:记录成功的原因reason:失败的原因
+        // 4.promise?有三种状态：1.pending准备态2.fulfilled完成态3.rejected拒绝态
+        // 5.promise状态只能改变一次，pending->fulfilled pending->rejected不能完成态拒绝态相互转换
+        const PENDING = 'pending'
+        const FUFILLED = 'fufilled'
+        const REJECTED = 'rejected'
+        class Promise {
+            value
+            reson
+            status = PENDING
+            onFufilledCallback = []
+            onRejectedCallback = []
+            constructor(executor) {
+                const resolve = (value) => {
+                    if (this.status === PENDING) {
+                        this.value = value
+                        this.status = FUFILLED
+                        this.onFufilledCallback.forEach(cb => cb());
+                    }
+                }
+                const reject = (reson) => {
+                    if (this.status === PENDING) {
+                        this.reson = reson
+                        this.status = REJECTED
+                        this.onRejectedCallback.forEach(cb => cb());
+                    }
+                }
+
+                try {
+                    executor(resolve, reject)
+                } catch (error) {
+                    reject(error)
+                }
+            }
+
+            then(onFufilled, onRejected) {
+                if (this.status === FUFILLED) {
+                    onFufilled(this.value)
+                }
+                if (this.status === REJECTED) {
+                    onRejected(this.reson)
+                }
+                if (this.status === PENDING) {
+                    this.onFufilledCallback.push(() => {
+                        onFufilled(this.value)
+                    })
+                    this.onRejectedCallback.push(() => {
+                        onRejected(this.reson)
+                    })
+                }
+            }
+        }
+        const p = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve('你好')
+            }, 3000)
+        })
+        p.then(res => console.log(res))
+        p.then(res => console.log(res))
+    </script>
+</body>
+
+</html>
