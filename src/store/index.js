@@ -5,8 +5,17 @@ import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  plugins: [
+    createPersistedState({
+      key: 'heimatoutiao',
+      reducer({ tokenObj, myChannels }) {
+        return { tokenObj, myChannels }
+      }
+    })
+  ],
   state: {
-    tokenObj: {}
+    tokenObj: {},
+    myChannels: []
   },
   getters: {
     isLogin(state) {
@@ -16,14 +25,13 @@ export default new Vuex.Store({
   mutations: {
     SET_TOKEN(state, token) {
       state.tokenObj = token
+    },
+    /**
+     *
+     * @param {Array} channels 删除或者添加后的最新的Channels
+     */
+    SET_MY_CHANNELS(state, channels) {
+      state.myChannels = channels
     }
-  },
-  plugins: [
-    createPersistedState({
-      key: 'heimatoutiao',
-      reducer({ tokenObj }) {
-        return tokenObj
-      }
-    })
-  ]
+  }
 })
