@@ -30,3 +30,17 @@ export const getUserInfoApi = () => {
     url: '/v1_0/user'
   })
 }
+/**
+ *
+ * @param {*} file 裁剪过后的图片file文件
+ * @returns Promise
+ */
+export const uploadPhotoAPI = (file) => {
+  const fm = new FormData()
+  fm.append('photo', file)
+  return request({
+    url: '/v1_0/user/photo',
+    method: 'PATCH',
+    data: fm
+  })
+}
