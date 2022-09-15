@@ -8,14 +8,15 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       key: 'heimatoutiao',
-      reducer({ tokenObj, myChannels }) {
-        return { tokenObj, myChannels }
+      reducer({ tokenObj, myChannels, histories }) {
+        return { tokenObj, myChannels, histories }
       }
     })
   ],
   state: {
     tokenObj: {},
-    myChannels: []
+    myChannels: [],
+    histories: []
   },
   getters: {
     isLogin(state) {
@@ -32,6 +33,13 @@ export default new Vuex.Store({
      */
     SET_MY_CHANNELS(state, channels) {
       state.myChannels = channels
+    },
+    /**
+     *
+     * @param {Array} histories 添加或者删除后新的histories数组
+     */
+    SET_HISTORIES(state, histories) {
+      state.histories = histories
     }
   }
 })
