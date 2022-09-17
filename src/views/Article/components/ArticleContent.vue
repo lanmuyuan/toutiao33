@@ -20,20 +20,67 @@
     </van-cell>
     <div v-html="article.content" class="content"></div>
     <van-divider>正文结束</van-divider>
-    <van-list
-      :finished="true"
-      finished-text="没有更多了"
-      class="list"
-    ></van-list>
+    <van-list :finished="true" finished-text="没有更多了" class="list">
+      <CommentsItem
+        :comment="item"
+        v-for="item in commentsList"
+        :key="item.com_id"
+      ></CommentsItem>
+    </van-list>
   </div>
 </template>
 
 <script>
+import CommentsItem from './CommentsItem.vue'
+import { getCommentsAPI } from '@/api'
 export default {
   props: {
     article: {
       type: Object,
       required: true
+    },
+    newObj: {
+      type: Object,
+      required: true
+    }
+  },
+  components: {
+    CommentsItem
+  },
+  data() {
+    return {
+      commentsList: []
+    }
+  },
+  created() {
+    this.getComments()
+  },
+  methods: {
+    async getComments() {
+      try {
+        const { data } = await getCommentsAPI(
+          'a',
+          this.$route.query.articleId,
+          null,
+          10
+        )
+        console.log(data)
+        this.commentsList = data.data.results
+      } catch (error) {
+        if (error.response && error.response.status === 400) {
+          this.$toast.fail('获取评论参数错误')
+        } else {
+          throw error
+        }
+      }
+    }
+  },
+  watch: {
+    newObj: {
+      handler(newValue) {
+        console.log(newValue)
+        this.commentsList.unshift(newValue)
+      }
     }
   }
 }

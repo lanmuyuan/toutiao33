@@ -1,11 +1,13 @@
 <template>
   <div>
     <van-nav-bar title="黑马头条" left-arrow @click-left="$router.back()" />
-    <ArticleContent :article="article"></ArticleContent>
+    <ArticleContent :article="article" :newObj="newObj"></ArticleContent>
     <!-- 底部功能栏 -->
     <div class="article-bottom">
       <!-- 写评论按钮 -->
-      <van-button type="default" round>写评论</van-button>
+      <van-button type="default" round @click="isShowComments = true"
+        >写评论</van-button
+      >
       <van-icon class-prefix="toutiao" name="wenda" />
       <van-icon
         class-prefix="toutiao"
@@ -16,6 +18,14 @@
       <van-icon class-prefix="toutiao" name="dianzan" />
       <van-icon class-prefix="toutiao" name="fenxiang" />
     </div>
+    <!-- 评论弹出框 -->
+    <van-popup
+      v-model="isShowComments"
+      position="bottom"
+      :style="{ height: '18%' }"
+    >
+      <CommentsIpt :newObj.sync="newObj"></CommentsIpt>
+    </van-popup>
   </div>
 </template>
 
@@ -26,12 +36,16 @@ import {
   setCollectionsAPI,
   deleteCollectionsAPI
 } from '@/api'
+import CommentsIpt from '@/components/commentsIpt.vue'
 export default {
-  components: { ArticleContent },
+  components: { ArticleContent, CommentsIpt },
   data() {
     return {
       article: {},
-      isCollection: ''
+      isCollection: '',
+      isShowComments: false,
+      message: '',
+      newObj: {}
     }
   },
   created() {
@@ -71,7 +85,6 @@ export default {
       const id = this.$route.query.articleId
       try {
         const { data } = await getArticlesDetailsAPI(id)
-        console.log(data)
         this.article = data.data
         this.isCollection = data.data.is_collected
       } catch (error) {

@@ -26,11 +26,7 @@ export default {
     return {
       minDate: new Date(1900, 0, 1),
       maxDate: new Date(),
-      currentDate: new Date(
-        this.Profile.birthday.split('-')[0],
-        +this.Profile.birthday.split('-')[1] - 1,
-        this.Profile.birthday.split('-')[2]
-      )
+      currentDate: new Date(...this.format(this.Profile.birthday))
     }
   },
   methods: {
@@ -52,6 +48,11 @@ export default {
           throw error
         }
       }
+    },
+    format(timeStr) {
+      const timeArr = timeStr.split('-')
+      timeArr[1]--
+      return timeArr
     }
   }
 }
